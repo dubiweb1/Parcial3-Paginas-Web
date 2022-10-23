@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="css/bootstrap.css" rel="stylesheet">
+  <script src="js/bootstrap.js"></script>
+  <script src="https://kit.fontawesome.com/b375149b8e.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <title>Suscriptores</title>
+</head>
+
+<body onload="listar();">
+  <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #c7cacb;">
+    <div class="container-fluid">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="index.html"><i class="fa fa-home"
+                aria-hidden="true"></i> Inicio</a>
+          </li>
+        </ul>
+
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <br />
+    <div class="mb-3">
+      <label for="name" class="form-label"><i class="fa fa-building-o" aria-hidden="true"></i> Categoría</label>
+      <select class="form-control" id="categoria" required>
+        <option selected="" disabled="">Categorías</option>
+        <option value="Individual">Individual</option>
+        <option value="Corporativo">Corporativo</option>        
+      </select>
+
+  </div>
+    <div class="mb-3">
+      <label for="name" class="form-label"><i class="fa fa-user-o" aria-hidden="true"></i> Nombres</label>
+      <input type="text" class="form-control" id="name" placeholder="Manuel" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="lastname" class="form-label"><i class="fa fa-user-o" aria-hidden="true"></i> Apellidos</label>
+      <input type="text" class="form-control" id="lastname" placeholder="Fuentes" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="email" class="form-label"><i class="fa fa-envelope-o" aria-hidden="true"></i> Correo
+        Electrónico</label>
+      <input type="email" class="form-control" id="email" placeholder="name@example.com" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="passwd" class="form-label"><i class="fa fa-dot-circle-o" aria-hidden="true"></i> Contraseña</label>
+      <input type="password" class="form-control" id="passwd" placeholder="*******" required>
+    </div>
+
+    <div class="mb-3">
+      <input class="form-check-input" type="checkbox" id="info" required>
+      <label class="form-check-label" for="info"> <i class="fa fa-clone" aria-hidden="true"></i> Desea recibir
+        información</label>
+    </div>
+
+    <div class="mb-3">
+      <input class="form-check-input" type="checkbox" id="terminos" required>
+      <label class="form-check-label" for="terminos"> <i class="fa fa-clone" aria-hidden="true"></i> Acepta los términos
+        de servicio</label>
+    </div>
+    <button class="btn btn-primary mb-3" onclick="guadar_localStorage();listar();">Regístrate</button>
+
+    <br />
+    <br />
+    <div class="alert alert-primary" role="alert">
+      Listado de registros
+    </div>
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th scope="col"><i class="fa fa-building" aria-hidden="true"></i> Categorías</th>
+          <th scope="col"><i class="fa fa-user" aria-hidden="true"></i> Nombres</th>
+          <th scope="col"><i class="fa fa-user" aria-hidden="true"></i> Apellidos</th>
+          <th scope="col"><i class="fa fa-envelope" aria-hidden="true"></i> Email</th>
+          <th scope="col"><i class="fa fa-lock" aria-hidden="true"></i> Password</th>
+          <th scope="col"><i class="fa fa-check-square" aria-hidden="true"></i> Información</th>
+          <th scope="col"><i class="fa fa-check-square" aria-hidden="true"></i> Términos</th>
+          <th scope="col"><i class="fa fa-trash" aria-hidden="true"></i> Eliminar</th>
+        </tr>
+      </thead>
+      <tbody id="listarclave">
+
+      </tbody>
+    </table>
+
+
+  </div>
+</body>
+<script>
+
+  function guadar_localStorage() {
+    var categoria = document.getElementById("categoria").value;
+    var name = document.getElementById("name").value;
+    var lastname = document.getElementById("lastname").value;
+    var email = document.getElementById("email").value;
+    var passwd = document.getElementById("passwd").value;
+    var info = document.getElementById("info").checked;
+    var terminos = document.getElementById("terminos").checked;
+
+    const registro_uusario = {
+      categoria:categoria,
+      name: name,
+      lastname: lastname,
+      email: email,
+      passwd: passwd,
+      info: info,
+      terminos: terminos,
+    };
+
+    if (
+      window.localStorage.getItem('r-' + email) !== undefined &&
+      window.localStorage.getItem('r-' + email)
+    ) {
+
+      Swal.fire({
+        icon: "error",
+        title: "Usuario ya registrado",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+
+    } else {
+
+      if (name == "" || lastname == "" || email == "" || passwd == "" || terminos != true) {
+        Swal.fire({
+          icon: "error",
+          title: "Datos Solicitados",
+          showConfirmButton: false,
+          timer: 1500,
+        }).then((result) => {
+          setTimeout(function () {
+            if (document.getElementById('name')) {
+              document.getElementById('name').focus();
+            }
+          }, 1);
+        });
+
+      } else {
+        localStorage.setItem('r-' + email, JSON.stringify(registro_uusario));
+        categoria = document.getElementById("categoria").tabIndex = 0;
+        name = document.getElementById("name").value = "";
+        lastname = document.getElementById("lastname").value = "";
+        email = document.getElementById("email").value = "";
+        passwd = document.getElementById("passwd").value = "";
+        info = document.getElementById("info").checked = false;
+        terminos = document.getElementById("terminos").checked = false;
+
+        Swal.fire({
+          icon: "success",
+          title: "Almacenado Correctamente",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+
+      }
+    }
+  }
+
+
+  function listar() {
+
+    document.getElementById('listarclave').innerHTML = "";
+
+    for (x = 0, len = localStorage.length; x < len; x++) {
+      clave = localStorage.key(x);
+      if (clave.startsWith('r-')) {
+        value = localStorage[clave];
+        var data = JSON.parse(value);
+
+        var ele = document.getElementById('listarclave');
+        var tr = document.createElement('tr');
+        ele.appendChild(tr);
+
+        var td = document.createElement('td');
+        tr.appendChild(td);
+        var txt = document.createTextNode(data.categoria);
+        td.appendChild(txt);
+
+        var td = document.createElement('td');
+        tr.appendChild(td);
+        var txt = document.createTextNode(data.name);
+        td.appendChild(txt);
+
+        var td = document.createElement('td');
+        tr.appendChild(td);
+        var txt = document.createTextNode(data.lastname);
+        td.appendChild(txt);
+
+        var td = document.createElement('td');
+        tr.appendChild(td);
+        var txt = document.createTextNode(data.email);
+        td.appendChild(txt);
+
+        var td = document.createElement('td');
+        tr.appendChild(td);
+        var txt = document.createTextNode(data.passwd);
+        td.appendChild(txt);
+
+        var td = document.createElement('td');
+        tr.appendChild(td);
+        var txt = document.createTextNode(data.info);
+        td.appendChild(txt);
+
+        var td = document.createElement('td');
+        tr.appendChild(td);
+        var txt = document.createTextNode(data.terminos);
+        td.appendChild(txt);
+
+
+
+        var td = document.createElement('td');
+        tr.appendChild(td);
+        var a = document.createElement('a')
+        td.appendChild(a);
+        var linktext = document.createTextNode("🗑");
+        a.appendChild(linktext);
+        a.title = "Eliminar";
+        a.href = "javascript:eliminar(" + "'" + clave + "'" + ");";
+        a.id = "Eliminar";
+      }
+    }
+  }
+
+  function eliminar(keyeliminar) {
+
+    Swal.fire({
+      title: 'Desea eliminar este registró?',
+      text: "Este registro será eliminado permanentemente!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, eliminarlo!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.localStorage.removeItem(keyeliminar);
+        listar();
+        Swal.fire(
+          'Eliminado!',
+          'Registro fue eliminado con éxito.',
+          'success'
+        )
+      }
+    })
+
+  }
+
+</script>
+
+</html>
